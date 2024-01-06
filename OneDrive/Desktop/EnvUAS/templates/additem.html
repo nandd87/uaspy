@@ -1,0 +1,50 @@
+<!-- templates/additem.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Item</title>
+</head>
+<body>
+    <h1>Add new item</h1>
+    <form action="{{ url_for('add.upload') }}" method="post" enctype="multipart/form-data">
+        <label for="nama">Name:</label>
+        <input type="text" name="nama" required>
+        
+        <label for="deskripsi">Description:</label>
+        <input type="text" name="deskripsi" required>
+        
+        <label for="harga">Price:</label>
+        <input type="number" name="harga" required>
+
+        <label for="jenis">Type:</label>
+        <select name="jenis" required>
+            <option value="walker">Walker</option>
+            <option value="runner">Runner</option>
+            <option value="sneaker">Sneaker</option>
+        </select>
+        
+        <label for="file">Choose an image:</label>
+        <input type="file" name="file" accept="image/*" required>
+        
+        <button type="submit">Add Item</button>
+    </form>
+    <hr>
+    <!-- Display existing items -->
+    <!-- Display existing items -->
+    <!-- Display existing items -->
+<!-- Display existing items -->
+        {% for item in items %}
+        <img src="{{ url_for('static', filename= item.image) }}" alt="{{ item.nama }}">
+        <h1><p>{{ item.nama }} - {{ item.deskripsi }} - {{ item.harga }}</p>
+        <p>Generated URL: {{ url_for('static', filename= item.image) }}</p>
+        </h1>
+        {% endfor %}
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!-- templates/cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>The Boys Store - Shopping Cart</title>
+
+    <style>
+        .navbar-custom {
+            background-color: #177592;
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-text {
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-lg-top rounded-bottom" style="background-color: #177592;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}" style="color: wheat;">The Boys Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Add other navigation links if needed -->
+                </ul>
+
+                <div class="dropdown">
+                    <a href="#" style="margin-right: 1cm; text-decoration: none; color: wheat;" class="dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Produk
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('product.product_page', product_type='walker') }}">Walker</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('product.product_page', product_type='sneaker') }}">Sneaker</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('product.product_page', product_type='runner') }}">Runner</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <form class="d-flex" action="{{ url_for('product.perform_search') }}" method="get">
+                <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
+                <button style="background-color: white; color: black; margin-right: 20px;" class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+    
+            {% if session.get('user_logged_in') %}
+                <!-- User is logged in -->
+                <a href="{{ url_for('product.view_cart') }}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16" style="color: white;" name="Cart">
+                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                  </svg></a>
+    
+                  <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white;">
+                        <svg style="margin-top: 6; margin-left:8; color:white;" xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"/>
+                        </svg>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ url_for('login.logout') }}">Logout</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <!-- User is not logged in, redirect to login -->
+                <a href="{{ url_for('login.login_render') }}" style="text-decoration: none; color: white;">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    
+    <!-- Navbar code remains unchanged -->
+
+    <section class="h-100 h-custom">
+        <div class="container h-100 py-5">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col">
+    
+                    {% if cart_items %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Harga</th>
+                                        <th scope="col">Actions</th> <!-- Added column for actions -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in cart_items %}
+                                        <tr>
+                                            <td>{{ item.id }}</td>
+                                            <td>{{ item.nama }}</td>
+                                            <td>${{ item.harga }}</td>
+                                            <td>
+                                                <form method="post" action="{{ url_for('product.remove_from_cart', item_id=item.id) }}">
+                                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+    
+                        <div class="card shadow-2-strong mb-5 mb-lg-0" style="border-radius: 16px;">
+                            <div class="card-body p-4">
+                                <form>
+                                    <!-- Checkout form remains unchanged -->
+                                </form>
+                            </div>
+                        </div>
+    
+                        <!-- Display Total Harga -->
+                        <div class="d-flex justify-content-between mb-4" style="font-weight: 500;">
+                            <p class="mb-2">Total Harga</p>
+                            <p class="mb-2">${{ total_harga }}</p>
+                        </div>
+                        
+                        <form method="post" action="{{ url_for('product.clear') }}" onsubmit="alert('Order Berhasil Dikirim!')">
+                            <div class="mb-3">
+                                <label for="nama-pelanggan" class="form-label">Nama Pelanggan</label>
+                                <input type="text" class="form-control" id="nama-pelanggan" name="nama-pelanggan" required>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="alamat" class="form-label">Alamat</label>
+                                <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label for="nomor-hp" class="form-label">Nomor HP</label>
+                                <input type="tel" class="form-control" id="nomor-hp" name="nomor-hp" required>
+                            </div>
+                        
+                            <button type="submit" class="btn btn-primary">Place Order</button>
+                        </form>
+    
+                    {% else %}
+                        <p>Your cart is empty.</p>
+                    {% endif %}
+    
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <footer class="mt-auto rounded-3" style="background-color: #177592; padding-top: 1cm; bottom: 0; width: 100%; display: flex; justify-content: end;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5" style="margin-right: -4cm;">
+                    <ul class="adress">
+                        <h1>logo disini</h1>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 d-flex align-items-center justify-content-center" style="margin-right: 1;color: white;">
+                    <ul class="contact">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+                        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                    <ul class="social" style="text-align: justify;margin-left: 4cm;color: white;">
+                        <span> Contact Us:</span>
+                        <li>Saia</li>
+                        <li>Dan Saia sendiri</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

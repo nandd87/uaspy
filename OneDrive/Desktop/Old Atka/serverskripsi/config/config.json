@@ -1,0 +1,12 @@
+{
+    "development": {
+        "username": "root",
+        "password": null,
+        "database": "skripsi",
+        "host": "localhost",
+        "dialect": "mysql",
+        "define": {
+            "freezeTableName": true
+        }
+    }
+}
